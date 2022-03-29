@@ -94,6 +94,7 @@ namespace FamilyShooter
             // handle collision between enemies
             for (int i = 0; i < enemies.Count - 1; i++)
             {
+                // triangle iteration to avoid redundant / same entity collision check
                 for (int j = i + 1; j < enemies.Count; j++)
                 {
                     if (IsColliding(enemies[i], enemies[j]))
@@ -109,7 +110,7 @@ namespace FamilyShooter
             // but gets an extra life just on this frame thanks a final shot
             for (int i = 0; i < enemies.Count; i++)
             {
-                for (int j = i + 1; j < bullets.Count; j++)
+                for (int j = 0; j < bullets.Count; j++)
                 {
                     if (IsColliding(enemies[i], bullets[j]))
                     {
@@ -119,9 +120,10 @@ namespace FamilyShooter
                 }
             }
 
-            // handle collision between black holes and enemies
+            // handle collision between black holes and ...
             for (int i = 0; i < blackHoles.Count; i++)
             {
+                // ... enemies
                 for (int j = 0; j < enemies.Count; j++)
                 {
                     if (IsColliding(blackHoles[i], enemies[j]))
@@ -131,7 +133,8 @@ namespace FamilyShooter
                     }
                 }
 
-                for (int j = i + 1; j < bullets.Count; j++)
+                // ... bullets
+                for (int j = 0; j < bullets.Count; j++)
                 {
                     if (IsColliding(blackHoles[i], bullets[j]))
                     {
@@ -140,8 +143,9 @@ namespace FamilyShooter
                     }
                 }
 
-                // Unlike tutorial, I check IsActive in case player bullet destroyed black hole this frame,
-                // to avoid killing player
+                // ... player ship
+                // (this checks IsExpired, in case player bullet destroyed black hole this frame,
+                // to avoid killing player)
                 if (IsColliding(blackHoles[i], PlayerShip.Instance))
                 {
                     // Note: black hole is NOT destroyed!
