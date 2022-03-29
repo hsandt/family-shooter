@@ -23,6 +23,7 @@ namespace FamilyShooter
 
         private const int respawnDuration = 90;  // frames (must be at least 1 to avoid scoring on death)
         private const int respawnDurationOnGameOver = 300;  // frames (must be at least 1 to avoid scoring on death)
+        private const int EXPLOSION_PFX_COUNT = 1200;
         private int framesUntilRespawn = 0;  // frames
         public bool IsDead => framesUntilRespawn > 0;
 
@@ -41,7 +42,7 @@ namespace FamilyShooter
             // kind of yellow
             Color particleColorYellow = new Color(0.8f, 0.8f, 0.4f);
 
-            for (int i = 0; i < 1200; i++)
+            for (int i = 0; i < EXPLOSION_PFX_COUNT; i++)
             {
                 float particleSpeed = 18f * (1f - 1f / rand.NextFloat(1f, 10f));
                 Color particleColor = Color.Lerp(Color.White, particleColorYellow, rand.NextFloat(0f, 1f));

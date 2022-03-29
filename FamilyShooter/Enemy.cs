@@ -16,6 +16,7 @@ namespace FamilyShooter
         const float friction = 0.8f;
         const float moveRandomlyAngleMaxDeltaDeg = 5.73f;  // 0.1 rad in deg
         const int moveRandomlyAngleChangePeriod = 6; // frames
+        private const int EXPLOSION_PFX_COUNT = 120;
 
         public int RewardScore { get; private set; }
 
@@ -71,7 +72,7 @@ namespace FamilyShooter
             // but still cleaner to distinguish scoring shot from silent clearance on player ship death
             // to avoid scoring a lot on death via auto-clean
             IsExpired = true;
-            
+
             // just for style (no score)
             PlayExplosionPFX();
             Sound.GetRandomExplosion().Play(0.5f, rand.NextFloat(-0.2f, 0.2f), 0f);
@@ -93,8 +94,8 @@ namespace FamilyShooter
             float hue2 = (hue1 + rand.NextFloat(0, 2)) % 6f;
             Color color1 = ColorUtil.HSVToColor(hue1, 0.5f, 1);
             Color color2 = ColorUtil.HSVToColor(hue2, 0.5f, 1);
-            
-            for (int i = 0; i < 120; i++)
+
+            for (int i = 0; i < EXPLOSION_PFX_COUNT; i++)
             {
                 float speed = 18f * (1f - 1 / rand.NextFloat(1f, 10f));
                 var state = new ParticleState()

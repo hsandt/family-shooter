@@ -9,6 +9,7 @@ namespace FamilyShooter
 
         /* Const */
         private const int BOUNCES_PER_BULLET = 1;
+        private const int EXPLOSION_ON_WALL_PFX_COUNT = 30;
         private readonly Color defaultColor = new Color(83, 172, 255);  // blue
         private readonly Color friendlyFireColor = new Color(255, 83, 83);  // red
 
@@ -42,7 +43,7 @@ namespace FamilyShooter
             {
                 if (m_BouncesLeft <= 0)
                 {
-                    Explode();
+                    ExplodeOnWall();
                 }
                 else
                 {
@@ -63,12 +64,12 @@ namespace FamilyShooter
             GameRoot.Grid.ApplyExplosiveForce(150f * Velocity.Length(), new Vector3(Position, 0f), 80f);
         }
 
-        private void Explode()
+        private void ExplodeOnWall()
         {
             IsExpired = true;
 
             // Explosion PFX for style
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < EXPLOSION_ON_WALL_PFX_COUNT; i++)
             {
                 // Technically, angle should be opposite of wall/corner touched, but to simplify it can be any angle
                 // although half of them will leave screen and won't be visible
