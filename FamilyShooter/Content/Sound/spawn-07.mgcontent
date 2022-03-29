@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>/home/leyn/Projects/MonoGame/FamilyShooter/FamilyShooter/Content/Sound/spawn-07.wav</SourceFile>
+  <SourceTime>2013-07-26T17:29:36+02:00</SourceTime>
+  <DestFile>/home/leyn/.nuget/packages/monogame.content.builder.task/3.8.1.2089-develop/tools/net5.0/any/true/../../../../../../../Projects/MonoGame/FamilyShooter/FamilyShooter/Content/Sound/spawn-07.xnb</DestFile>
+  <DestTime>2022-03-04T16:13:18.4748757+01:00</DestTime>
+  <Importer>WavImporter</Importer>
+  <ImporterTime>2022-03-01T04:00:02+01:00</ImporterTime>
+  <Processor>SoundEffectProcessor</Processor>
+  <ProcessorTime>2022-03-01T04:00:02+01:00</ProcessorTime>
+  <Parameters>
+    <Key>Quality</Key>
+    <Value>Best</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>
