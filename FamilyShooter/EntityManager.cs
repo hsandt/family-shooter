@@ -120,6 +120,18 @@ namespace FamilyShooter
                 }
             }
 
+            // handle collision between friendly-fire bullets and player ship
+            // do this before Player being killed in case deaths are simultaneous and player has no lives left,
+            // but gets an extra life just on this frame thanks a final shot
+            foreach (Bullet bullet in bullets)
+            {
+                if (bullet.CanHitPlayerShip && IsColliding(PlayerShip.Instance, bullet))
+                {
+                    PlayerShip.Instance.Kill();
+                    bullet.IsExpired = true;
+                }
+            }
+
             // handle collision between black holes and ...
             for (int i = 0; i < blackHoles.Count; i++)
             {
@@ -148,7 +160,8 @@ namespace FamilyShooter
                 // to avoid killing player)
                 if (IsColliding(blackHoles[i], PlayerShip.Instance))
                 {
-                    // Note: black hole is NOT destroyed!
+                    // Note: black hole is NOT destroyed now,
+                    // but if we destroy all entities on player death anyway, it doesn't matter too much
                     PlayerShip.Instance.Kill();
                     break;
                 }
