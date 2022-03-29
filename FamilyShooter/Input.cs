@@ -27,14 +27,16 @@ namespace FamilyShooter
             mouseState = Mouse.GetState();
             gamePadState = GamePad.GetState(PlayerIndex.One);
 
-            // If the player pressed one of the arrow keys or is using a gamepad to aim, we want to disable mouse aiming. Otherwise,
-            // if the player moves the mouse, enable mouse aiming.
+            // Since Family Shooter is about precision shooting, do not keep mouse fire active at all times,
+            // and verify if left button is pressed.
+            // If the player pressed one of the arrow keys or is using a gamepad to aim, or has mouse left button released,
+            // we want to disable mouse aiming. Otherwise, if the player holds mouse left button, enable mouse aiming.
             if (new[] {Keys.Left, Keys.Right, Keys.Up, Keys.Down}.Any(x => keyboardState.IsKeyDown(x)) ||
-                gamePadState.ThumbSticks.Right != Vector2.Zero)
+                gamePadState.ThumbSticks.Right != Vector2.Zero || mouseState.LeftButton == ButtonState.Released)
             {
                 isAimingWithMouse = false;
             }
-            else if (MousePosition != LastMousePosition)
+            else if (mouseState.LeftButton == ButtonState.Pressed)
             {
                 isAimingWithMouse = true;
             }
