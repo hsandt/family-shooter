@@ -62,8 +62,8 @@ namespace FamilyShooter
             PlayerStatus.LoseLife();
 
             // Clear screen to help player comeback
-            // Note: bullets stay, but could be cleared too to avoid strange effects
-            EntityManager.ClearAllEnemiesAndObstacles();
+            // This includes bullets, which are now friendly-fire after bounce
+            EntityManager.ClearAllBulletsEnemiesAndObstacles();
 
             // Added myself
             // offset on Z to try some 3D impulse

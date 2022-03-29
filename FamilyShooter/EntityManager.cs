@@ -180,10 +180,11 @@ namespace FamilyShooter
             }
         }
 
-        public static void ClearAllEnemiesAndObstacles()
+        public static void ClearAllBulletsEnemiesAndObstacles()
         {
-            enemies.ForEach(x => x.SilentKill());
+            enemies.ForEach(x => x.ClearWithExplosion());
             blackHoles.ForEach(x => x.Kill());
+            bullets.ForEach(x => x.IsExpired = true);
         }
 
         public static IEnumerable<Entity> GetNearbyEntities(Vector2 position, float radius)

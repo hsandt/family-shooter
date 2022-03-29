@@ -66,7 +66,7 @@ namespace FamilyShooter
             Velocity *= friction;
         }
 
-        public void SilentKill()
+        public void ClearWithExplosion()
         {
             // PlayerStatus.AddScoreForDestruction has some check for living Player,
             // but still cleaner to distinguish scoring shot from silent clearance on player ship death
