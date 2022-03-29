@@ -295,8 +295,8 @@ public class Grid
     {
         // Color color = new Color(30, 30, 139, 85);   // dark blue (tutorial)
         Color color = new Color(47, 47, 255, 85);   // lighter blue, more visible
-        Color smoothedColor = new Color(0, 255, 0, 85);   // test to demonstrate smoothed points
-        Color nonSmoothedColor = new Color(255, 0, 0, 85);   // test to demonstrate non-smoothed points
+        // Color smoothedColor = new Color(0, 255, 0, 85);   // test to demonstrate smoothed points
+        // Color nonSmoothedColor = new Color(255, 0, 0, 85);   // test to demonstrate non-smoothed points
 
         int width = points.GetLength(0);
         int height = points.GetLength(1);
@@ -324,9 +324,8 @@ public class Grid
                     if (Vector2.DistanceSquared(smoothedMid, (start + rightNeighbor) / 2f) > 1f)
                     {
                         // More than 1px between smoothed mid and linear mid point, worth using it
-                        spriteBatch.DrawLine(start, smoothedMid, smoothedColor, thickness);
-                        spriteBatch.DrawLine(smoothedMid, rightNeighbor, smoothedColor, thickness);
-                        spriteBatch.DrawLine(start, rightNeighbor, nonSmoothedColor, thickness);
+                        spriteBatch.DrawLine(start, smoothedMid, color, thickness);
+                        spriteBatch.DrawLine(smoothedMid, rightNeighbor, color, thickness);
                     }
                     else
                     {
@@ -348,9 +347,8 @@ public class Grid
                     if (Vector2.DistanceSquared(smoothedMid, (start + bottomNeighbor) / 2f) > 1f)
                     {
                         // More than 1px between smoothed mid and linear mid point, worth using it
-                        spriteBatch.DrawLine(start, smoothedMid, smoothedColor, thickness);
-                        spriteBatch.DrawLine(smoothedMid, bottomNeighbor, smoothedColor, thickness);
-                        spriteBatch.DrawLine(start, bottomNeighbor, nonSmoothedColor, thickness);
+                        spriteBatch.DrawLine(start, smoothedMid, color, thickness);
+                        spriteBatch.DrawLine(smoothedMid, bottomNeighbor, color, thickness);
                     }
                     else
                     {
