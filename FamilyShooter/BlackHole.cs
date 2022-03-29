@@ -13,7 +13,7 @@ namespace FamilyShooter
         private float sprayAngle = 0;
 
         /* Parameters*/
-        private const int EXPLOSION_PFX_COUNT = 150;
+        private const int SHOT_PFX_COUNT = 30;
 
         public BlackHole(Vector2 position)
         {
@@ -30,11 +30,11 @@ namespace FamilyShooter
             Color particleColor = ColorUtil.HSVToColor(hue, 0.25f, 1f);
             // add start offset just to avoid having particles spawned exactly on the same star branches
             // so we have more varied angles
-            float startOffset = rand.NextFloat(0, MathHelper.TwoPi / EXPLOSION_PFX_COUNT);
+            float startOffset = rand.NextFloat(0, MathHelper.TwoPi / SHOT_PFX_COUNT);
 
-            for (int i = 0; i < EXPLOSION_PFX_COUNT; i++)
+            for (int i = 0; i < SHOT_PFX_COUNT; i++)
             {
-                Vector2 sprayVel = MathUtil.FromPolar(MathHelper.TwoPi * i / EXPLOSION_PFX_COUNT + startOffset, rand.NextFloat(8, 16));
+                Vector2 sprayVel = MathUtil.FromPolar(MathHelper.TwoPi * i / SHOT_PFX_COUNT + startOffset, rand.NextFloat(8, 16));
                 var state = new ParticleState
                 {
                     Velocity = sprayVel,

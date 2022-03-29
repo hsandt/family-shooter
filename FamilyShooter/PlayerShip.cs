@@ -63,7 +63,7 @@ namespace FamilyShooter
 
             // Clear screen to help player comeback
             // This includes bullets, which are now friendly-fire after bounce
-            EntityManager.ClearAllBulletsEnemiesAndObstacles();
+            EntityManager.ClearAllEntitiesOnScreen();
 
             // Added myself
             // offset on Z to try some 3D impulse
@@ -79,7 +79,7 @@ namespace FamilyShooter
                 framesUntilRespawn--;
                 if (framesUntilRespawn == 0)
                 {
-                    GameRoot.Grid.ApplyDirectedForce(60f * 5000f * Vector3.Backward, new Vector3(Position, 0f), 50f);
+                    Respawn();
                 }
                 return;
             }
@@ -153,6 +153,15 @@ namespace FamilyShooter
 
             // PFX
             MakeExhaustFire();
+        }
+
+        private void Respawn()
+        {
+            // clear any remaining particles to avoid visual confusion
+            // (most are almost invisible, but since new black holes and attract them and increase their speed,
+            // there is some odds that they become brighter again)
+            GameRoot.ParticleManager.ClearAllParticles();
+            GameRoot.Grid.ApplyDirectedForce(60f * 5000f * Vector3.Backward, new Vector3(Position, 0f), 50f);
         }
 
         private void MakeExhaustFire()

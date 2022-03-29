@@ -16,7 +16,7 @@ namespace FamilyShooter
         const float friction = 0.8f;
         const float moveRandomlyAngleMaxDeltaDeg = 5.73f;  // 0.1 rad in deg
         const int moveRandomlyAngleChangePeriod = 6; // frames
-        private const int EXPLOSION_PFX_COUNT = 120;
+        private const int EXPLOSION_PFX_COUNT = 60;
 
         public int RewardScore { get; private set; }
 

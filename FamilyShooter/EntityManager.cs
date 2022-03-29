@@ -180,8 +180,9 @@ namespace FamilyShooter
             }
         }
 
-        public static void ClearAllBulletsEnemiesAndObstacles()
+        public static void ClearAllEntitiesOnScreen()
         {
+            // keep particles for death feedback
             enemies.ForEach(x => x.ClearWithExplosion());
             blackHoles.ForEach(x => x.Kill());
             bullets.ForEach(x => x.IsExpired = true);
