@@ -17,7 +17,7 @@ namespace FamilyShooter
         private static readonly Random rand = new Random();
 
         private const float bulletSpeed = 11f;
-        private const float bulletSpawnForwardOffsetDistance = 25f;
+        private const float bulletSpawnForwardOffsetDistance = 35f;
         private const float bulletSpawnOrthogonalOffsetDistance = 8f;
         private const float bulletMaxDeviationAngleDeg = 2.29f;  // 0.04 rad * 57.29578 = 2.29 deg
 
@@ -139,13 +139,19 @@ namespace FamilyShooter
                     float randomSpread = MathHelper.ToRadians(rand.NextFloat(-bulletMaxDeviationAngleDeg, bulletMaxDeviationAngleDeg) + rand.NextFloat(-bulletMaxDeviationAngleDeg, bulletMaxDeviationAngleDeg));
                     Vector2 bulletVelocity = MathUtil.FromPolar(aimAngle + randomSpread, bulletSpeed);
 
-                    Vector2 baseOffsetLeft = new Vector2(bulletSpawnForwardOffsetDistance, -bulletSpawnOrthogonalOffsetDistance);
-                    Vector2 rotatedOffsetLeft = Vector2.Transform(baseOffsetLeft, aimQuat);
-                    EntityManager.Add(new Bullet(Position + rotatedOffsetLeft, bulletVelocity));
+                    // Vector2 baseOffsetLeft = new Vector2(bulletSpawnForwardOffsetDistance, -bulletSpawnOrthogonalOffsetDistance);
+                    // Vector2 rotatedOffsetLeft = Vector2.Transform(baseOffsetLeft, aimQuat);
+                    // EntityManager.Add(new Bullet(Position + rotatedOffsetLeft, bulletVelocity));
+                    //
+                    // Vector2 baseOffsetRight = new Vector2(bulletSpawnForwardOffsetDistance, bulletSpawnOrthogonalOffsetDistance);
+                    // Vector2 rotatedOffsetRight = Vector2.Transform(baseOffsetRight, aimQuat);
+                    // EntityManager.Add(new Bullet(Position + rotatedOffsetRight, bulletVelocity));
 
-                    Vector2 baseOffsetRight = new Vector2(bulletSpawnForwardOffsetDistance, bulletSpawnOrthogonalOffsetDistance);
-                    Vector2 rotatedOffsetRight = Vector2.Transform(baseOffsetRight, aimQuat);
-                    EntityManager.Add(new Bullet(Position + rotatedOffsetRight, bulletVelocity));
+                    // In Family Shooter, we need precise shots, so better shoot a single bullet,
+                    // spawned at forward offset only
+                    Vector2 baseOffset = new Vector2(bulletSpawnForwardOffsetDistance, 0f);
+                    Vector2 rotatedOffset = Vector2.Transform(baseOffset, aimQuat);
+                    EntityManager.Add(new Bullet(Position + rotatedOffset, bulletVelocity));
 
                     Sound.GetRandomShot().Play(0.2f, rand.NextFloat(-0.2f, 0.2f), 0f);
                 }
