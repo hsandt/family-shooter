@@ -36,9 +36,15 @@ namespace FamilyShooter
         {
             Position += Velocity;
 
-            // Check for dead zone: when bullet completely leaves screen, destroy it
-            bool hitVerticalWall = Position.X < - Size.X / 2f || Position.X > GameRoot.ScreenSize.X + Size.X / 2f;
-            bool hitHorizontalWall = Position.Y < -Size.Y / 2f || Position.Y > GameRoot.ScreenSize.Y + Size.Y / 2f;
+            // Check for dead zone: when bullet moves toward a wall and completely leaves screen in that direction, destroy it
+            // The velocity check makes sure we don't destroy bullets that spawn outside screen and come inside,
+            // which only happens when shooting a bullet while touching the screen edge and aiming at this edge,
+            // which makes the bullet bounce but immediately hit the same wall again and be destroyed;
+            // instead, with the velocity check, bullet will enter screen properly and generally destroy the Player Ship
+            // due to friendly fire, being worse for the player but more consistent with behavior when shooting a wall
+            // from a short distance.
+            bool hitVerticalWall = Velocity.X < 0f && Position.X < - Size.X / 2f || Velocity.X > 0f && Position.X > GameRoot.ScreenSize.X + Size.X / 2f;
+            bool hitHorizontalWall = Velocity.Y < 0f && Position.Y < -Size.Y / 2f || Velocity.Y > 0f && Position.Y > GameRoot.ScreenSize.Y + Size.Y / 2f;
             if (hitVerticalWall || hitHorizontalWall)
             {
                 if (m_BouncesLeft <= 0)
