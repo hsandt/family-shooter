@@ -8,8 +8,7 @@ namespace FamilyShooter
         private static Random rand = new Random();
         private const float initialInverseSpawnChance = 60f;
         private static float inverseSpawnChance = initialInverseSpawnChance;
-        // private const float initialInverseBlackHoleSpawnChance = 600f;
-        private const float initialInverseBlackHoleSpawnChance = 1f;
+        private const float initialInverseBlackHoleSpawnChance = 600f;
         private const int maxBlackHolesCount = 2;
 
         public static void Update()
