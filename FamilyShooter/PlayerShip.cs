@@ -72,6 +72,11 @@ namespace FamilyShooter
             GameRoot.Grid.ApplyExplosiveForce(60f * 5000f, new Vector3(Position, -80f), 150f, dampingModifier: 1f);
         }
 
+        public void SpawnCompanion()
+        {
+            EntityManager.Add(new CompanionShip());
+        }
+
         public override void Update()
         {
             if (IsDead)
@@ -137,7 +142,8 @@ namespace FamilyShooter
 
                     // Sum two randoms to increase probability density at the center
                     float randomSpread = MathHelper.ToRadians(rand.NextFloat(-bulletMaxDeviationAngleDeg, bulletMaxDeviationAngleDeg) + rand.NextFloat(-bulletMaxDeviationAngleDeg, bulletMaxDeviationAngleDeg));
-                    Vector2 bulletVelocity = MathUtil.FromPolar(aimAngle + randomSpread, bulletSpeed);
+                    float aimAngleWithSpread = aimAngle + randomSpread;
+                    Vector2 bulletVelocity = MathUtil.FromPolar(aimAngleWithSpread, bulletSpeed);
 
                     // Vector2 baseOffsetLeft = new Vector2(bulletSpawnForwardOffsetDistance, -bulletSpawnOrthogonalOffsetDistance);
                     // Vector2 rotatedOffsetLeft = Vector2.Transform(baseOffsetLeft, aimQuat);
@@ -154,6 +160,12 @@ namespace FamilyShooter
                     EntityManager.Add(new Bullet(Position + rotatedOffset, bulletVelocity));
 
                     Sound.GetRandomShot().Play(0.2f, rand.NextFloat(-0.2f, 0.2f), 0f);
+
+                    // Companion shots
+                    foreach (var companionShip in EntityManager.CompanionShips)
+                    {
+                        companionShip.Shoot(aimAngleWithSpread);
+                    }
                 }
             }
 

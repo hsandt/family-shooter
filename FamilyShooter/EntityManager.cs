@@ -9,6 +9,10 @@ namespace FamilyShooter
     {
         // if you add a lst here, make sure to update it on Update when entities are Expired
         private static List<Entity> entities = new List<Entity>();
+
+        private static List<CompanionShip> companionShips = new List<CompanionShip>();
+        public static List<CompanionShip> CompanionShips => companionShips;
+
         private static List<Enemy> enemies = new List<Enemy>();
         private static List<Bullet> bullets = new List<Bullet>();
         private static List<BlackHole> blackHoles = new List<BlackHole>();
@@ -62,6 +66,7 @@ namespace FamilyShooter
             entities = entities.Where(x => !x.IsExpired).ToList();
             bullets = bullets.Where(x => !x.IsExpired).ToList();
             enemies = enemies.Where(x => !x.IsExpired).ToList();
+            companionShips = companionShips.Where(x => !x.IsExpired).ToList();
             blackHoles = blackHoles.Where(x => !x.IsExpired).ToList();
         }
 
@@ -73,6 +78,9 @@ namespace FamilyShooter
             {
                 case Bullet bullet:
                     bullets.Add(bullet);
+                    break;
+                case CompanionShip companionShip:
+                    companionShips.Add(companionShip);
                     break;
                 case Enemy enemy:
                     enemies.Add(enemy);
@@ -105,30 +113,36 @@ namespace FamilyShooter
                 }
             }
 
-            // handle collision between bullets and enemies
-            // do this before Player being killed in case deaths are simultaneous and player has no lives left,
-            // but gets an extra life just on this frame thanks a final shot
-            for (int i = 0; i < enemies.Count; i++)
-            {
-                for (int j = 0; j < bullets.Count; j++)
-                {
-                    if (IsColliding(enemies[i], bullets[j]))
-                    {
-                        enemies[i].WasShot();
-                        bullets[j].IsExpired = true;
-                    }
-                }
-            }
-
-            // handle collision between friendly-fire bullets and player ship
-            // do this before Player being killed in case deaths are simultaneous and player has no lives left,
-            // but gets an extra life just on this frame thanks a final shot
+            // handle collision between bullets and ...
             foreach (Bullet bullet in bullets)
             {
+                // ... player ship (only for friendly-fire bullets)
                 if (bullet.CanHitPlayerShip && IsColliding(PlayerShip.Instance, bullet))
                 {
                     PlayerShip.Instance.Kill();
                     bullet.IsExpired = true;
+                }
+
+                // ... companion ship (only for friendly-fire bullets)
+                foreach (CompanionShip companionShip in companionShips)
+                {
+                    if (bullet.CanHitPlayerShip && IsColliding(companionShip, bullet))
+                    {
+                        companionShip.Kill();
+                        bullet.IsExpired = true;
+                    }
+                }
+
+                // ... enemies
+                // do this before Player being killed in case deaths are simultaneous and player has no lives left,
+                // but gets an extra life just on this frame thanks a final shot
+                for (int i = 0; i < enemies.Count; i++)
+                {
+                    if (IsColliding(enemies[i], bullet))
+                    {
+                        enemies[i].WasShot();
+                        bullet.IsExpired = true;
+                    }
                 }
             }
 

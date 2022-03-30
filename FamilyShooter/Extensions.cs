@@ -11,6 +11,12 @@ namespace FamilyShooter
             return (float) Math.Atan2(vector.Y, vector.X);
         }
 
+        public static Vector2 Rotated(this Vector2 vector, float angle)
+        {
+            Quaternion quat = Quaternion.CreateFromAxisAngle(Vector3.Backward, angle);
+            return Vector2.Transform(vector, quat);
+        }
+
         /// Return copy of vector scaled to a certain magnitude
         /// (Tutorial uses it but never indicated it's a custom extension, so I had to write it myself)
         public static Vector2 ScaleTo(this Vector2 vector, float magnitude)
@@ -23,6 +29,21 @@ namespace FamilyShooter
             }
 
             return Vector2.Zero;
+        }
+
+        /// Return vector displaced towards target by a distance maxDelta at most
+        public static Vector2 Towards(this Vector2 vector, Vector2 target, float maxDelta)
+        {
+            Vector2 delta = target - vector;
+            float deltaLengthSquared = delta.LengthSquared();
+
+            if (deltaLengthSquared <= maxDelta * maxDelta)
+            {
+                return target;
+            }
+
+            // if deltaLengthSquared is 0f, we've returned early above, so it's safe to divide
+            return vector + maxDelta / MathF.Sqrt(deltaLengthSquared) * delta;
         }
 
         public static float NextFloat(this Random rand, float minValue, float maxValue)
