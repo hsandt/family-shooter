@@ -76,7 +76,8 @@ public class Grid
             if (dampingDelta != 0f)
             {
                 // Friction: go toward BASE_DAMPING, but not faster than 0.1 per frame
-                damping -= MathF.Sign(dampingDelta) * MathF.Min(0.1f, MathF.Abs(dampingDelta));
+                // damping -= MathF.Sign(dampingDelta) * MathF.Min(0.1f, MathF.Abs(dampingDelta));
+                damping = BASE_DAMPING;
             }
         }
     }
@@ -90,7 +91,7 @@ public class Grid
         public float Stiffness;
         public float Damping;
 
-        public Spring(PointMass end1, PointMass end2, float targetLength, float stiffness, float damping)
+        public Spring(PointMass end1, PointMass end2, float stiffness, float damping)
         {
             End1 = end1;
             End2 = end2;
@@ -128,7 +129,6 @@ public class Grid
     // Const
     private const int ANCHOR_POINT_PERIOD = 3;
     private const float INV_MASS = 1f;
-    private const float TARGET_LENGTH = 1f;
 
     // Remember to multiply all values used for force/acceleration by 60
     private const float STIFFNESS = 60 * 0.28f;
@@ -138,7 +138,7 @@ public class Grid
     private const float SPRING_DAMPING_BORDER = 60 * 0.1f;
 
     // looser at center anchor points
-    private const float STIFFNESS_CENTER_ANCHOR = 60 * 0.002f;
+    private const float STIFFNESS_CENTER_ANCHOR = 10 * 60 * 0.002f;
     private const float SPRING_DAMPING_CENTER_ANCHOR = 60 * 0.02f;
 
     private const float ANCHOR_LINE_THICKNESS = 3f;  // 3f in tutorial, but hard to see
@@ -190,12 +190,12 @@ public class Grid
                 // TODO: indirect border anchors too
                 if (i % ANCHOR_POINT_PERIOD == 0 && j % ANCHOR_POINT_PERIOD == 0)
                 {
-                    springsList.Add(new Spring(points[i, j], fixedPoints[i, j], TARGET_LENGTH, STIFFNESS_CENTER_ANCHOR, SPRING_DAMPING_CENTER_ANCHOR));
+                    springsList.Add(new Spring(points[i, j], fixedPoints[i, j], STIFFNESS_CENTER_ANCHOR, SPRING_DAMPING_CENTER_ANCHOR));
                 }
 
                 // each point not on the bottom or right edge has a bottom and right neighbor
-                springsList.Add(new Spring(points[i, j], points[i + 1, j], TARGET_LENGTH, STIFFNESS, SPRING_DAMPING));
-                springsList.Add(new Spring(points[i, j + 1], points[i, j], TARGET_LENGTH, STIFFNESS, SPRING_DAMPING));
+                springsList.Add(new Spring(points[i, j], points[i + 1, j], STIFFNESS, SPRING_DAMPING));
+                springsList.Add(new Spring(points[i, j + 1], points[i, j], STIFFNESS, SPRING_DAMPING));
             }
         }
 
@@ -242,7 +242,7 @@ public class Grid
         }
     }
 
-    public void ApplyImplosiveForce(float force, Vector3 position, float radius)
+    public void ApplyImplosiveForce(float force, Vector3 position, float radius, float dampingModifier = 0.6f)
     {
         // Improvement over tutorial: only iterate on points likely to be in radius
         GetRangeOfPointsInsideRadius(position, radius, out int left, out int right, out int top, out int bottom);
@@ -257,7 +257,7 @@ public class Grid
                 if (dist2 < radius * radius)
                 {
                     mass.ApplyForce(10 * force * (position - mass.Position) / (100 + dist2));
-                    mass.IncreaseDamping(0.6f);
+                    mass.IncreaseDamping(dampingModifier);
                 }
             }
         }
