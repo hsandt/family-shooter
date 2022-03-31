@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -24,19 +25,82 @@ namespace FamilyShooter
         private const int respawnDuration = 90;  // frames (must be at least 1 to avoid scoring on death)
         private const int respawnDurationOnGameOver = 300;  // frames (must be at least 1 to avoid scoring on death)
         private const int EXPLOSION_PFX_COUNT = 1200;
+        private const int MAX_COMPANIONS_COUNT = 4;  // if you change this, make sure to update GetAngleOffsetFromIndex cases
         private int framesUntilRespawn = 0;  // frames
         public bool IsDead => framesUntilRespawn > 0;
+
+        /// Last aim angle, used to place companion ships correctly if attached without holding fire
+        private float m_LastAimAngle;
+
+        private readonly List<CompanionShip> attachedCompanionShips = new List<CompanionShip>();
 
         public PlayerShip()
         {
             image = Art.Player;
             Position = GameRoot.ScreenSize / 2f;
             CollisionRadius = 10;
+            m_LastAimAngle = 0f;
+        }
+
+        public void TryAttachCompanion(CompanionShip companionShip)
+        {
+            if (attachedCompanionShips.Count < MAX_COMPANIONS_COUNT)
+            {
+                AttachCompanion(companionShip);
+            }
+        }
+
+        public void AttachCompanion(CompanionShip companionShip)
+        {
+            companionShip.OnAttachToPlayerShipWith(attachedCompanionShips.Count);
+            attachedCompanionShips.Add(companionShip);
+
+            // place them appropriately even if player is not shooting
+            companionShip.SetBaseAngleAroundPlayerShip(m_LastAimAngle);
+        }
+
+        public void DetachCompanion(CompanionShip companionShip)
+        {
+            companionShip.OnDetachFromPlayerShip();
+            int indexOf = attachedCompanionShips.IndexOf(companionShip);
+            if (indexOf >= 0)
+            {
+                attachedCompanionShips.RemoveAt(indexOf);
+
+                // At this point, there is possibly a hole in the attached companions list
+                // We'd better fill the gap, or we'll keep a hole in indices too,
+                // but the companions count has just decreased by 1, so the next companion will
+                // be added with next index anyway, possibly overlapping an existed attached companion index.
+                // We could swap element with last and reindex that one, but in this case we've already removed
+                // the element and offset all further ones in the list, so just reindex all of those.
+                for (int i = indexOf; i < attachedCompanionShips.Count; i++)
+                {
+                    // this will re-assign index (make sure that this method has no assert
+                    // if already attached!)
+                    attachedCompanionShips[i].OnAttachToPlayerShipWith(i);
+                }
+            }
+            else
+            {
+                throw new Exception($"DetachCompanion: companionShip not found in attached list (companionShip.IsAttachedToPlayerShip: {companionShip.IsAttachedToPlayerShip})");
+            }
+        }
+
+        public void DetachAllCompanions()
+        {
+            foreach (var attachedCompanionShip in attachedCompanionShips)
+            {
+                attachedCompanionShip.OnDetachFromPlayerShip();
+            }
+
+            attachedCompanionShips.Clear();
         }
 
         public void Kill()
         {
             framesUntilRespawn = PlayerStatus.IsGameOver ? respawnDurationOnGameOver : respawnDuration;
+
+            DetachAllCompanions();
 
             // PFX
             // kind of yellow
@@ -156,11 +220,16 @@ namespace FamilyShooter
 
                     Sound.GetRandomShot().Play(0.2f, rand.NextFloat(-0.2f, 0.2f), 0f);
 
+                    m_LastAimAngle = aimAngle;
+
                     // Companion shots (only if attached)
                     foreach (var companionShip in EntityManager.CompanionShips)
                     {
                         if (companionShip.IsAttachedToPlayerShip)
                         {
+                            // make sure to place the companion along a stable angle to match player input
+                            // but shoot with the adjusted (random spread) angle
+                            companionShip.SetBaseAngleAroundPlayerShip(m_LastAimAngle);
                             companionShip.Shoot(aimAngleWithSpread);
                         }
                     }

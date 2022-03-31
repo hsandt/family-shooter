@@ -208,7 +208,7 @@ namespace FamilyShooter
                     IsColliding(companionShip, PlayerShip.Instance, extraRadius: 40f))
                 {
                     // Player Ship collects companion ship, attach it
-                    companionShip.IsAttachedToPlayerShip = true;
+                    PlayerShip.Instance.TryAttachCompanion(companionShip);
                 }
             }
         }

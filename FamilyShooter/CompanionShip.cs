@@ -12,14 +12,17 @@ namespace FamilyShooter
 
         private const float bulletSpeed = 11f;
         private const float bulletSpawnForwardOffsetDistance = 35f;
-        private const float bulletSpawnOrthogonalOffsetDistance = 8f;
-        private const float bulletMaxDeviationAngleDeg = 2.29f;  // 0.04 rad * 57.29578 = 2.29 deg
 
         private static readonly Random rand = new Random();
 
         /* State */
 
-        public bool IsAttachedToPlayerShip;
+        public bool IsAttachedToPlayerShip => m_AttachmentIndex >= 0;
+
+        private int m_AttachmentIndex;
+
+        /// Angle it should be located at around the Player Ship (only if IsAttachedToPlayerShip is true)
+        private float angleAroundPlayerShip;
 
         public CompanionShip()
         {
@@ -28,7 +31,8 @@ namespace FamilyShooter
             Position = GameRoot.ScreenSize / 2f;
             CollisionRadius = 5;
 
-            IsAttachedToPlayerShip = false;
+            m_AttachmentIndex = -1;
+            angleAroundPlayerShip = 0f;
         }
 
         public override void Update()
@@ -36,19 +40,54 @@ namespace FamilyShooter
             if (IsAttachedToPlayerShip && !PlayerShip.Instance.IsDead)
             {
                 // on the right of player ship
-                Vector2 offset = OFFSET_FROM_PLAYER_SHIP * Vector2.UnitY;
-                Vector2 rotatedOffset = offset.Rotated(PlayerShip.Instance.Orientation);
+                Vector2 offset = OFFSET_FROM_PLAYER_SHIP * Vector2.UnitX;
+                Vector2 rotatedOffset = offset.Rotated(angleAroundPlayerShip);
                 Vector2 targetPosition = PlayerShip.Instance.Position + rotatedOffset;
 
                 // Movement: no need to even set Velocity, just move position at max speed toward target
                 float maxMotion = MAX_SPEED_TO_TARGET * (float)GameRoot.GameTime.ElapsedGameTime.TotalSeconds;
                 Position = Position.Towards(targetPosition, maxMotion);
-                Orientation = PlayerShip.Instance.Orientation;
+                Orientation = angleAroundPlayerShip;
             }
             else
             {
 
             }
+        }
+
+        public void OnAttachToPlayerShipWith(int attachmentIndex)
+        {
+            m_AttachmentIndex = attachmentIndex;
+        }
+
+        public void OnDetachFromPlayerShip()
+        {
+            m_AttachmentIndex = -1;
+        }
+
+        public void SetBaseAngleAroundPlayerShip(float baseAngleAroundPlayerShip)
+        {
+            angleAroundPlayerShip = baseAngleAroundPlayerShip + GetAngleOffsetFromIndex();
+        }
+
+        private float GetAngleOffsetFromIndex()
+        {
+            switch (m_AttachmentIndex)
+            {
+                // a case for every index < MAX_COMPANIONS_COUNT
+                case 0:
+                    return MathHelper.ToRadians(25f);
+                case 1:
+                    return MathHelper.ToRadians(-25f);
+                case 2:
+                    return MathHelper.ToRadians(50f);
+                case 3:
+                    return MathHelper.ToRadians(-50f);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(m_AttachmentIndex), $"Unsupported attachment index {m_AttachmentIndex}");
+            }
+
+            // return 0f;
         }
 
         public void Shoot(float aimAngle)
@@ -66,6 +105,11 @@ namespace FamilyShooter
         public void Kill()
         {
             IsExpired = true;
+
+            if (IsAttachedToPlayerShip)
+            {
+                PlayerShip.Instance.DetachCompanion(this);
+            }
 
             // PFX
             // kind of yellow
