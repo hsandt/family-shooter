@@ -97,9 +97,10 @@ namespace FamilyShooter
             Add(companionShip);
         }
 
-        private static bool IsColliding(Entity a, Entity b)
+        private static bool IsColliding(Entity a, Entity b, float extraRadius = 0f)
         {
-            float radiusSum = a.CollisionRadius + b.CollisionRadius;
+            // Apply positive extra radius to make it easier to collide (or negative extra radius to make it harder)
+            float radiusSum = a.CollisionRadius + b.CollisionRadius + extraRadius;
             return !a.IsExpired && !b.IsExpired && Vector2.DistanceSquared(a.Position, b.Position) < radiusSum * radiusSum;
         }
 
@@ -196,6 +197,18 @@ namespace FamilyShooter
                 {
                     PlayerShip.Instance.Kill();
                     break;
+                }
+            }
+
+            // handle collision between player ship and unattached companion ship
+            foreach (CompanionShip companionShip in companionShips)
+            {
+                // extra radius helps catching companion, since Player Ship hurtbox is made small to avoid damages
+                if (!companionShip.IsAttachedToPlayerShip &&
+                    IsColliding(companionShip, PlayerShip.Instance, extraRadius: 40f))
+                {
+                    // Player Ship collects companion ship, attach it
+                    companionShip.IsAttachedToPlayerShip = true;
                 }
             }
         }

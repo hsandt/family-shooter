@@ -11,7 +11,8 @@ namespace FamilyShooter
         private const float multiplierExpiryTime = 0.8f;  // seconds
         private const int maxMultiplier = 20;
         private const int extraLifeRequiredAdditionalScore = 2000;
-        private const int extraCompanionRequiredAdditionalScore = 500;
+        // private const int extraCompanionRequiredAdditionalScore = 500;
+        private const int extraCompanionRequiredAdditionalScore = 10;  // TEST many companions
 
         public static int Lives { get; private set; }
         public static int Score { get; private set; }

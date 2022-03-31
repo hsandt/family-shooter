@@ -17,17 +17,23 @@ namespace FamilyShooter
 
         private static readonly Random rand = new Random();
 
+        /* State */
+
+        public bool IsAttachedToPlayerShip;
+
         public CompanionShip()
         {
             image = Art.CompanionShip;
             color = new Color(20, 255, 0);
             Position = GameRoot.ScreenSize / 2f;
             CollisionRadius = 5;
+
+            IsAttachedToPlayerShip = false;
         }
 
         public override void Update()
         {
-            if (!PlayerShip.Instance.IsDead)
+            if (IsAttachedToPlayerShip && !PlayerShip.Instance.IsDead)
             {
                 // on the right of player ship
                 Vector2 offset = OFFSET_FROM_PLAYER_SHIP * Vector2.UnitY;
@@ -38,6 +44,10 @@ namespace FamilyShooter
                 float maxMotion = MAX_SPEED_TO_TARGET * (float)GameRoot.GameTime.ElapsedGameTime.TotalSeconds;
                 Position = Position.Towards(targetPosition, maxMotion);
                 Orientation = PlayerShip.Instance.Orientation;
+            }
+            else
+            {
+
             }
         }
 
