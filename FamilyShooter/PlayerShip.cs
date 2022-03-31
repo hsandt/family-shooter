@@ -72,11 +72,6 @@ namespace FamilyShooter
             GameRoot.Grid.ApplyExplosiveForce(60f * 5000f, new Vector3(Position, -80f), 150f, dampingModifier: 1f);
         }
 
-        public void SpawnCompanion()
-        {
-            EntityManager.Add(new CompanionShip());
-        }
-
         public override void Update()
         {
             if (IsDead)

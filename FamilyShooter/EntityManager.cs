@@ -91,6 +91,12 @@ namespace FamilyShooter
             }
         }
 
+        public static void SpawnCompanionShip(Vector2 position)
+        {
+            var companionShip = new CompanionShip { Position = position };
+            Add(companionShip);
+        }
+
         private static bool IsColliding(Entity a, Entity b)
         {
             float radiusSum = a.CollisionRadius + b.CollisionRadius;

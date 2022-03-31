@@ -18,7 +18,7 @@ namespace FamilyShooter
         const int moveRandomlyAngleChangePeriod = 6; // frames
         private const int EXPLOSION_PFX_COUNT = 60;
 
-        public int RewardScore { get; private set; }
+        public int RewardScore { get; }
 
         /* State */
         private int timeUntilActive = durationUntilActive;  // frames

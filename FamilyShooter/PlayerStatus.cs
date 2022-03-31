@@ -11,6 +11,7 @@ namespace FamilyShooter
         private const float multiplierExpiryTime = 0.8f;  // seconds
         private const int maxMultiplier = 20;
         private const int extraLifeRequiredAdditionalScore = 2000;
+        private const int extraCompanionRequiredAdditionalScore = 500;
 
         public static int Lives { get; private set; }
         public static int Score { get; private set; }
@@ -20,6 +21,9 @@ namespace FamilyShooter
 
         // Note: we count lives, not extra lives, no Lives == 0 is game over indeed
         public static bool IsGameOver => Lives == 0;
+
+        private static float scoreForExtraLife;
+        private static float scoreForExtraCompanion;
 
         static PlayerStatus()
         {
@@ -38,6 +42,9 @@ namespace FamilyShooter
             Lives = 4;
             Score = 0;
             ResetMultiplier();
+
+            scoreForExtraLife = extraLifeRequiredAdditionalScore;
+            scoreForExtraCompanion = extraCompanionRequiredAdditionalScore;
         }
 
         public static void ResetMultiplier()
@@ -72,15 +79,21 @@ namespace FamilyShooter
                 return;
             }
 
-            int oldScore = Score;
             Score += enemy.RewardScore * CurrentMultiplier;
 
-            // Tutorial stores next score for extra life, not a bad idea in case we want to increase the threshold
-            // difference each time
-            if (oldScore / extraLifeRequiredAdditionalScore < Score / extraLifeRequiredAdditionalScore)
+            // loop just in case we gained enough score to gain 2+ lives at once!
+            while (Score >= scoreForExtraLife)
             {
-                // we've reached a new threshold, add extra life
+                // we've reached a new threshold, add extra life and extend threshold for next time
+                scoreForExtraLife += extraLifeRequiredAdditionalScore;
                 Lives++;
+            }
+
+            // same for companion
+            while (Score >= scoreForExtraCompanion)
+            {
+                scoreForExtraCompanion += extraCompanionRequiredAdditionalScore;
+                EntityManager.SpawnCompanionShip(enemy.Position);
             }
 
             // Unlike tutorial, I call it directly here

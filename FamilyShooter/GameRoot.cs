@@ -52,7 +52,6 @@ namespace FamilyShooter
 
             // This must be done *after* base call so LoadContent has been called
             EntityManager.Add(PlayerShip.Instance);
-            PlayerShip.Instance.SpawnCompanion();
 
             // Set custom cursor
             // Hardware cursor is faster / more reactive than software cursor suggested in tutorial
