@@ -156,10 +156,13 @@ namespace FamilyShooter
 
                     Sound.GetRandomShot().Play(0.2f, rand.NextFloat(-0.2f, 0.2f), 0f);
 
-                    // Companion shots
+                    // Companion shots (only if attached)
                     foreach (var companionShip in EntityManager.CompanionShips)
                     {
-                        companionShip.Shoot(aimAngleWithSpread);
+                        if (companionShip.IsAttachedToPlayerShip)
+                        {
+                            companionShip.Shoot(aimAngleWithSpread);
+                        }
                     }
                 }
             }
