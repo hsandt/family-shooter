@@ -102,13 +102,13 @@ namespace FamilyShooter
 
             // Avoid exiting immediately when holding Escape while app is launching
             // by skipping the first two frames (time 0 and TargetElapsedTime)
-            if (gameTime.TotalGameTime > TargetElapsedTime && Input.WasKeyPressed(Keys.Q))
+            if (gameTime.TotalGameTime > TargetElapsedTime && Input.WasKeyPressed(Keys.X) | Input.WasButtonPressed(Buttons.Back))
             {
                 Exit();
                 return;
             }
 
-            if (Input.WasKeyPressed(Keys.Escape) | Input.WasButtonPressed(Buttons.Back))
+            if (Input.WasKeyPressed(Keys.Escape) | Input.WasKeyPressed(Keys.P) | Input.WasButtonPressed(Buttons.Start))
             {
                 m_IsPaused ^= true;
             }
