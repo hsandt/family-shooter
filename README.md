@@ -7,7 +7,7 @@ by Michael Hoffman.
 
 ## License
 
-See [LICENSE].
+See [LICENSE](LICENSE).
 
 Note that since the project was based on a tutorial, it contains code identical or similar to code snippets presented in that tutorial.
 Envato Tuts+ doesn't provide a clear license for tutorial code, so we assume fair use of code provided for learning purpose.
