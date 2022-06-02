@@ -258,7 +258,7 @@ namespace FamilyShooter
                 const float alpha = 0.7f;
 
                 Quaternion rot = Quaternion.CreateFromYawPitchRoll(0f, 0f, Orientation);
-                double t = GameRoot.GameTime.TotalGameTime.TotalSeconds;
+                double t = GameRoot.InGameTimeSpan.TotalSeconds;
 
                 Vector2 backwardDir = - MathUtil.FromPolar(Orientation, 1f);
                 Vector2 baseVel = 3f * backwardDir;

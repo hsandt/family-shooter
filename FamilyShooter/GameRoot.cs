@@ -14,6 +14,7 @@ namespace FamilyShooter
         public static Vector2 ScreenSize => new Vector2(Viewport.Width, Viewport.Height);
 
         public static GameTime GameTime { get; private set; }
+        public static TimeSpan InGameTimeSpan { get; private set; }
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -25,6 +26,11 @@ namespace FamilyShooter
         private const int maxGridPoints = 1600;
         public static Grid Grid;
 
+        // Game State
+
+        /// Is the gaume paused?
+        private bool m_IsPaused = false;
+
         public GameRoot()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -33,7 +39,9 @@ namespace FamilyShooter
 
             // bloom = new BloomComponent(this);
             // Components.Add(bloom);
-            // it's all bad!
+            // it's all bad on Linux because it only works with DirectX shaders
+            // For cross-platform Bloom, see:
+            // https://github.com/Kosmonaut3d/BloomFilter-for-Monogame-and-XNA
             // bloom.Settings = new BloomSettings(null, 0.25f, 4f, 2f, 1f, 1.5f, 1f);
             // bloom.Settings = new BloomSettings(null, 1f, 0f, 0f, 1f, 0f, 1f);
             // bloom.Settings = BloomSettings.PresetSettings[0];
@@ -68,6 +76,8 @@ namespace FamilyShooter
             Rectangle cellBounds = new Rectangle((int)(Viewport.Bounds.Left / gridSpacing.X), (int)(Viewport.Bounds.Top / gridSpacing.X),
                 (int)(Viewport.Bounds.Width / gridSpacing.X), (int)(Viewport.Bounds.Height / gridSpacing.X));
             Grid = new Grid(cellBounds, gridSpacing);
+
+            InGameTimeSpan = TimeSpan.Zero;
         }
 
         protected override void LoadContent()
@@ -82,22 +92,35 @@ namespace FamilyShooter
         {
             GameTime = gameTime;
 
+            base.Update(gameTime);
+
+            // Input must always be updated
             Input.Update();
 
             // Avoid exiting immediately when holding Escape while app is launching
             // by skipping the first two frames (time 0 and TargetElapsedTime)
-            if (gameTime.TotalGameTime > TargetElapsedTime && (Input.WasButtonPressed(Buttons.Back) || Input.WasKeyPressed(Keys.Escape)))
+            if (gameTime.TotalGameTime > TargetElapsedTime && Input.WasKeyPressed(Keys.Q))
             {
                 Exit();
+                return;
             }
 
-            EntityManager.Update();
-            EnemySpawner.Update();
-            PlayerStatus.Update();
-            ParticleManager.Update();
-            Grid.Update();
+            if (Input.WasKeyPressed(Keys.Escape) | Input.WasButtonPressed(Buttons.Back))
+            {
+                m_IsPaused ^= true;
+            }
 
-            base.Update(gameTime);
+            if (!m_IsPaused)
+            {
+                // Update in-game stuff
+                InGameTimeSpan += GameTime.ElapsedGameTime;
+
+                EntityManager.Update();
+                EnemySpawner.Update();
+                PlayerStatus.Update();
+                ParticleManager.Update();
+                Grid.Update();
+            }
         }
 
         protected override void Draw(GameTime gameTime)

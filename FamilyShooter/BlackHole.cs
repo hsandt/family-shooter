@@ -26,7 +26,7 @@ namespace FamilyShooter
         {
             hitpoints--;
 
-            float hue = (float)(3 * GameRoot.GameTime.TotalGameTime.TotalSeconds % 6);
+            float hue = (float)(3 * GameRoot.InGameTimeSpan.TotalSeconds % 6);
             Color particleColor = ColorUtil.HSVToColor(hue, 0.25f, 1f);
             // add start offset just to avoid having particles spawned exactly on the same star branches
             // so we have more varied angles
@@ -80,7 +80,7 @@ namespace FamilyShooter
             Color particleColor = ColorUtil.HSVToColor(5, 0.5f, 0.8f);  // light purple
             const float period = 0.8f;
             // The black holes spray some orbiting particles. The spray toggles on and off every quarter second.
-            if ((GameRoot.GameTime.TotalGameTime.Milliseconds / 250) % 2 == 0)
+            if ((GameRoot.InGameTimeSpan.Milliseconds / 250) % 2 == 0)
             {
                 // Note: unlike Tutorial, I consider spray angle the angle of the spawn position, and velocity is tangential,
                 // instead of the reverse
@@ -103,7 +103,7 @@ namespace FamilyShooter
         public override void Draw(SpriteBatch spriteBatch)
         {
             // make the size of the black hole pulsate
-            float scale = 1 + 0.1f * (float)Math.Sin(10 * GameRoot.GameTime.TotalGameTime.TotalSeconds);
+            float scale = 1 + 0.1f * (float)Math.Sin(10 * GameRoot.InGameTimeSpan.TotalSeconds);
             spriteBatch.Draw(image, Position, null, color, Orientation, Size / 2f, scale, 0, 0);
         }
     }
