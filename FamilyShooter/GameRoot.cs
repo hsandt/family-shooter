@@ -9,6 +9,9 @@ namespace FamilyShooter
 {
     public class GameRoot : Game
     {
+        // Constants
+        private readonly Color PAUSE_OVERLAY_BACKGROUND = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+
         public static GameRoot Instance { get; private set; }
         public static Viewport Viewport => Instance.GraphicsDevice.Viewport;
         public static Vector2 ScreenSize => new Vector2(Viewport.Width, Viewport.Height);
@@ -28,7 +31,7 @@ namespace FamilyShooter
 
         // Game State
 
-        /// Is the gaume paused?
+        /// Is the game paused?
         private bool m_IsPaused = false;
 
         public GameRoot()
@@ -158,7 +161,20 @@ namespace FamilyShooter
 
             _spriteBatch.End();
 
-            // Applies bloom
+            if (m_IsPaused)
+            {
+                // Default to Deferred, AlphaBlend, better for overlay than Additive
+                // _spriteBatch.Begin();
+                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
+
+                // Draw Pause overlay
+                _spriteBatch.DrawRect(Vector2.Zero, ScreenSize, PAUSE_OVERLAY_BACKGROUND);
+                DrawCenterAlignedString("Pause");
+
+                _spriteBatch.End();
+            }
+
+            // If bloom is enabled, applies bloom here
             base.Draw(gameTime);
         }
 
@@ -171,7 +187,13 @@ namespace FamilyShooter
         private void DrawCenterAlignedString(string text)
         {
             var textSize = Art.Font.MeasureString(text);
-            _spriteBatch.DrawString(Art.Font, text, ScreenSize / 2f - textSize / 2f, Color.White);
+
+            // Round position to integer pixel to avoid blurry text
+            // (can also .Round() in place)
+            Vector2 rawPosition = ScreenSize / 2f - textSize / 2f;
+            Vector2 roundedPosition = Vector2.Round(rawPosition);
+
+            _spriteBatch.DrawString(Art.Font, text, roundedPosition, Color.White);
         }
     }
 }

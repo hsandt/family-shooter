@@ -64,5 +64,10 @@ namespace FamilyShooter
             Vector2 delta = end - start;
             spriteBatch.Draw(Art.Pixel, start, null, color, delta.ToAngle(), 0.5f * Vector2.UnitY, new Vector2(delta.Length(), thickness), SpriteEffects.None, 0f);
         }
+
+        public static void DrawRect(this SpriteBatch spriteBatch, Vector2 corner1, Vector2 corner2, Color color)
+        {
+            spriteBatch.Draw(Art.Pixel, corner1, null, color, 0f, Vector2.Zero, corner2 - corner1, SpriteEffects.None, 0f);
+        }
     }
 }
