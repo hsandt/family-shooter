@@ -34,6 +34,11 @@ namespace FamilyShooter
         /// Is the game paused?
         private bool m_IsPaused = false;
 
+        // Cheat
+
+        /// Is god mode active?
+        public bool IsGodModeActive { get; private set; }
+
         public GameRoot()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -113,6 +118,11 @@ namespace FamilyShooter
                 m_IsPaused ^= true;
             }
 
+            if (Input.WasKeyPressed(Keys.G) | Input.WasButtonPressed(Buttons.LeftTrigger))
+            {
+                IsGodModeActive ^= true;
+            }
+
             if (!m_IsPaused)
             {
                 // Update in-game stuff
@@ -164,12 +174,20 @@ namespace FamilyShooter
             if (m_IsPaused)
             {
                 // Default to Deferred, AlphaBlend, better for overlay than Additive
-                // _spriteBatch.Begin();
-                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
+                _spriteBatch.Begin();
 
                 // Draw Pause overlay
                 _spriteBatch.DrawRect(Vector2.Zero, ScreenSize, PAUSE_OVERLAY_BACKGROUND);
                 DrawCenterAlignedString("Pause");
+
+                _spriteBatch.End();
+            }
+
+            if (IsGodModeActive)
+            {
+                _spriteBatch.Begin();
+
+                DrawHorizontalCenterAlignedString("God Mode", MathF.Round(ScreenSize.Y / 2f + 10f));
 
                 _spriteBatch.End();
             }
@@ -182,6 +200,18 @@ namespace FamilyShooter
         {
             var textWidth = Art.Font.MeasureString(text).X;
             _spriteBatch.DrawString(Art.Font, text, new Vector2(ScreenSize.X - textWidth - 5, y), Color.White);
+        }
+
+        private void DrawHorizontalCenterAlignedString(string text, float y)
+        {
+            var textSize = Art.Font.MeasureString(text);
+
+            // Round position to integer pixel to avoid blurry text
+            // (can also .Round() in place)
+            float rawPositionX = ScreenSize.X / 2f - textSize.X / 2f;
+            float roundedPositionX = MathF.Round(rawPositionX);
+
+            _spriteBatch.DrawString(Art.Font, text, new Vector2(roundedPositionX, y), Color.White);
         }
 
         private void DrawCenterAlignedString(string text)

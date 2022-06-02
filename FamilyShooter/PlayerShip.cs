@@ -100,6 +100,13 @@ namespace FamilyShooter
 
         public void Kill()
         {
+            if (GameRoot.Instance.IsGodModeActive)
+            {
+                // Player Ship is invincible (the other collider still resolves collision as usual)
+                // Note that CompanionShips can still die, but it's good for testing
+                return;
+            }
+
             PlayerStatus.LoseLife();
 
             // PlayerStatus.IsGameOver checks for Lives, so must be verified after LoseLife
