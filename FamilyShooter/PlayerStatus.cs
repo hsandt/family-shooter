@@ -113,18 +113,10 @@ namespace FamilyShooter
         public static void LoseLife()
         {
             Lives--;
+            ResetMultiplier();
 
-            if (Lives <= 0)
-            {
-                // game over
-                // Note: we don't clear bullets and enemies keep spawning during the gameover to respawn phase,
-                // so it's not a perfect restart yet.
-                Init();
-            }
-            else
-            {
-                ResetMultiplier();
-            }
+            // Don't call Init() on Lives <= 0 here anymore, to leave time to player to see game over message and
+            // high score. Re-Init on PlayerShip.Update at Respawn time instead
         }
 
         private static int LoadHighScore()

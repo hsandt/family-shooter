@@ -23,7 +23,9 @@ namespace FamilyShooter
         private const float bulletMaxDeviationAngleDeg = 2.29f;  // 0.04 rad * 57.29578 = 2.29 deg
 
         private const int respawnDuration = 90;  // frames (must be at least 1 to avoid scoring on death)
-        private const int respawnDurationOnGameOver = 300;  // frames (must be at least 1 to avoid scoring on death)
+        // Respawn duration on game over (must be at least 1 to avoid scoring on death,
+        // and if possible enough to let player read game over message)
+        private const int respawnDurationOnGameOver = 300;
         private const int EXPLOSION_PFX_COUNT = 1200;
         private const int MAX_COMPANIONS_COUNT = 4;  // if you change this, make sure to update GetAngleOffsetFromIndex cases
         private int framesUntilRespawn = 0;  // frames
@@ -98,6 +100,9 @@ namespace FamilyShooter
 
         public void Kill()
         {
+            PlayerStatus.LoseLife();
+
+            // PlayerStatus.IsGameOver checks for Lives, so must be verified after LoseLife
             framesUntilRespawn = PlayerStatus.IsGameOver ? respawnDurationOnGameOver : respawnDuration;
 
             DetachAllCompanions();
@@ -123,8 +128,6 @@ namespace FamilyShooter
             // reset spawner intensity
             EnemySpawner.Reset();
 
-            PlayerStatus.LoseLife();
-
             // Clear screen to help player comeback
             // This includes bullets, which are now friendly-fire after bounce
             EntityManager.ClearAllEntitiesOnScreen();
@@ -143,6 +146,12 @@ namespace FamilyShooter
                 framesUntilRespawn--;
                 if (framesUntilRespawn == 0)
                 {
+                    if (PlayerStatus.Lives == 0)
+                    {
+                        PlayerStatus.Init();
+                        Position = GameRoot.ScreenSize / 2;
+                    }
+
                     Respawn();
                 }
                 return;
