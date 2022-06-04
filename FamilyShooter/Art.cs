@@ -16,9 +16,7 @@ namespace FamilyShooter
         public static Texture2D LineParticle { get; private set; }
         public static Texture2D Glow { get; private set; }
         public static Texture2D BGSky { get; private set; }
-        public static Texture2D BGCloud1 { get; private set; }
-        public static Texture2D BGCloud2 { get; private set; }
-        public static Texture2D BGCloud3 { get; private set; }
+        public static Texture2D[] BGClouds { get; private set; }
         public static Texture2D Pixel { get; private set; }
         public static Texture2D Pointer { get; private set; }
         public static SpriteFont Font { get; private set; }
@@ -37,9 +35,12 @@ namespace FamilyShooter
 
             // Background
             BGSky = content.Load<Texture2D>("Art/BG_Sky");
-            BGCloud1 = content.Load<Texture2D>("Art/BG_Cloud1");
-            BGCloud2 = content.Load<Texture2D>("Art/BG_Cloud2");
-            BGCloud3 = content.Load<Texture2D>("Art/BG_Cloud3");
+            BGClouds = new[]
+            {
+                content.Load<Texture2D>("Art/BG_Cloud1"),
+                content.Load<Texture2D>("Art/BG_Cloud2"),
+                content.Load<Texture2D>("Art/BG_Cloud3"),
+            };
 
             // Create pixel procedurally
             Pixel = new Texture2D(Player.GraphicsDevice, 1, 1);

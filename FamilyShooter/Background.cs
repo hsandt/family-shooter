@@ -6,14 +6,54 @@ using FamilyShooter;
 
 public class Background
 {
+    /* Const */
+
+    private const float CLOUD_SPEED = 10f;
+
+    /* State */
+
+    private readonly List<Vector2>[] m_CloudPositionListsPerSpriteIndex = new List<Vector2>[3];
+
     public Background()
     {
+        for (int i = 0; i < 3; i++)
+        {
+            m_CloudPositionListsPerSpriteIndex[i] = new List<Vector2>();
+            for (int j = 0; j < 3; j++)
+            {
+                float x = 600f * i + 300f * j;
+                float y = 10f * i + 300f * (i + 1) / 2f * j * j;
+                m_CloudPositionListsPerSpriteIndex[i].Add(new Vector2(x, y));
+            }
+        }
     }
 
     public void Update()
     {
-        // Apply parallax motion
-        // velocity += acceleration * (float)GameRoot.GameTime.ElapsedGameTime.TotalSeconds;
+        for (int i = 0; i < 3; i++)
+        {
+            Texture2D currentCloudTexture = Art.BGClouds[i];
+            int wrapWidth = currentCloudTexture.Width;
+            int wrapHeight = currentCloudTexture.Height;
+
+            for (int j = 0; j < m_CloudPositionListsPerSpriteIndex[i].Count; j++)
+            {
+                Vector2 cloudPosition = m_CloudPositionListsPerSpriteIndex[i][j];
+
+                // Move cloud slowly
+                Vector2 moveDirection = Vector2.Normalize(new Vector2(1f, 0.1f * i + 0.05f * j));
+                float moveSpeed = CLOUD_SPEED * (1f + 0.3f * i) + (1f + 0.2f * j);
+                float deltaTime = (float)GameRoot.GameTime.ElapsedGameTime.TotalSeconds;
+                cloudPosition += moveSpeed * deltaTime * moveDirection;
+
+                // Wrap around screen
+                // Remember to pad with one width/height of the sprite itself, so we only warp it to the other side
+                // when fully out of view
+                cloudPosition.X = (cloudPosition.X + wrapWidth) % (GameRoot.ScreenSize.X + wrapWidth) - wrapWidth;
+                cloudPosition.Y = (cloudPosition.Y + wrapHeight) % (GameRoot.ScreenSize.Y + wrapHeight) - wrapHeight;
+                m_CloudPositionListsPerSpriteIndex[i][j] = cloudPosition;
+            }
+        }
     }
 
     public void Draw(SpriteBatch spriteBatch)
@@ -24,14 +64,12 @@ public class Background
         spriteBatch.Draw(Art.BGSky, Vector2.Zero, new Rectangle(0, 0, (int)GameRoot.ScreenSize.X, (int)GameRoot.ScreenSize.Y), Color.White);
 
         // Draw individual clouds
-        spriteBatch.Draw(Art.BGCloud1, new Vector2(10f, 10f), Color.White);
-        spriteBatch.Draw(Art.BGCloud2, new Vector2(500f, 200f), Color.White);
-        spriteBatch.Draw(Art.BGCloud3, new Vector2(50f, 400f), Color.White);
-
-        // Color color = new Color(30, 30, 139, 85);   // dark blue (tutorial)
-
-        Color color = new Color(47, 47, 255, 85);   // lighter blue, more visible
-        // Color smoothedColor = new Color(0, 255, 0, 85);   // test to demonstrate smoothed points
-        // Color nonSmoothedColor = new Color(255, 0, 0, 85);   // test to demonstrate non-smoothed points
+        for (int i = 0; i < 3; i++)
+        {
+            foreach (Vector2 cloudPosition in m_CloudPositionListsPerSpriteIndex[i])
+            {
+                spriteBatch.Draw(Art.BGClouds[i], cloudPosition, Color.White);
+            }
+        }
     }
 }
