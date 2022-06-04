@@ -62,8 +62,6 @@ namespace FamilyShooter
 
         protected override void Initialize()
         {
-            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-
             base.Initialize();
 
             // This must be done *after* base call so LoadContent has been called
