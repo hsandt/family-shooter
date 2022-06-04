@@ -66,8 +66,7 @@ namespace FamilyShooter
 
             // Remember to multiply by 60 frames, so 0.5 -> 30
             // For some reason, not enough since fixing anchor stiffness and damping, so increased
-            // GameRoot.Grid.ApplyExplosiveForce(30f * Velocity.Length(), new Vector3(Position, 0f), 80f);
-            GameRoot.Grid.ApplyExplosiveForce(150f * Velocity.Length(), new Vector3(Position, 0f), 80f);
+            // GameRoot.Grid.ApplyExplosiveForce(150f * Velocity.Length(), new Vector3(Position, 0f), 80f);
         }
 
         private void ExplodeOnWall()

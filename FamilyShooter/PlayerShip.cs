@@ -154,7 +154,7 @@ namespace FamilyShooter
             // offset on Z to try some 3D impulse
             // not so good, it moves instantly then takes time to come back...
             // even with dampingModifier set to preserve low damping
-            GameRoot.Grid.ApplyExplosiveForce(60f * 5000f, new Vector3(Position, -80f), 150f, dampingModifier: 1f);
+            // GameRoot.Grid.ApplyExplosiveForce(60f * 5000f, new Vector3(Position, -80f), 150f, dampingModifier: 1f);
         }
 
         public override void Update()
@@ -273,7 +273,7 @@ namespace FamilyShooter
             // (most are almost invisible, but since new black holes and attract them and increase their speed,
             // there is some odds that they become brighter again)
             GameRoot.ParticleManager.ClearAllParticles();
-            GameRoot.Grid.ApplyDirectedForce(60f * 5000f * Vector3.Backward, new Vector3(Position, 0f), 50f);
+            // GameRoot.Grid.ApplyDirectedForce(60f * 5000f * Vector3.Backward, new Vector3(Position, 0f), 50f);
         }
 
         private void MakeExhaustFire()

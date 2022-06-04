@@ -38,7 +38,7 @@ namespace FamilyShooter
                 GameRoot.ParticleManager.CreateParticle(Art.LineParticle, Position, particleColor, 190f, new Vector2(1.5f), state);
             }
 
-            GameRoot.Grid.ApplyExplosiveForce(60f * 500f, new Vector3(Position, -80f), 150f, dampingModifier: 1f);
+            // GameRoot.Grid.ApplyExplosiveForce(60f * 500f, new Vector3(Position, -80f), 150f, dampingModifier: 1f);
         }
 
         public void Clear()

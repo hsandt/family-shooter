@@ -27,7 +27,8 @@ namespace FamilyShooter
         // private BloomComponent bloom;
 
         private const int maxGridPoints = 1600;
-        public static Grid Grid;
+        // public static Grid Grid;
+        public static Background Background;
 
         // Game State
 
@@ -76,12 +77,16 @@ namespace FamilyShooter
 
             ParticleManager = new ParticleManager<ParticleState>(1024 * 20, ParticleState.UpdateParticle);
 
+            // No grid in this game, use Background instead
+            /*
             Vector2 gridSpacing = new Vector2(MathF.Sqrt((float)Viewport.Width * Viewport.Height / maxGridPoints));
             // unlike Tutorial, we are using grid cell coordinates not pixels, so we must divide everything
             // by gridSpacing.X
             Rectangle cellBounds = new Rectangle((int)(Viewport.Bounds.Left / gridSpacing.X), (int)(Viewport.Bounds.Top / gridSpacing.X),
                 (int)(Viewport.Bounds.Width / gridSpacing.X), (int)(Viewport.Bounds.Height / gridSpacing.X));
             Grid = new Grid(cellBounds, gridSpacing);
+            */
+            Background = new Background();
 
             InGameTimeSpan = TimeSpan.Zero;
         }
@@ -130,7 +135,8 @@ namespace FamilyShooter
                 EnemySpawner.Update();
                 PlayerStatus.Update();
                 ParticleManager.Update();
-                Grid.Update();
+                // Grid.Update();
+                Background.Update();
             }
         }
 
@@ -141,9 +147,12 @@ namespace FamilyShooter
 
             GraphicsDevice.Clear(Color.Black);
 
-            // Now player sprites are physical objects while enemy sprites are pure colors,
-            // so Additive is not fully justified but overall it works better when enemy sprites are overlapping others
-            _spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive);
+            _spriteBatch.Begin(SpriteSortMode.Texture, samplerState: SamplerState.LinearWrap);
+            Background.Draw(_spriteBatch);
+            _spriteBatch.End();
+
+            // Additive doesn't work anymore on top of standard background, so use default blend mode
+            _spriteBatch.Begin(SpriteSortMode.Texture);
             EntityManager.Draw(_spriteBatch);
             _spriteBatch.End();
 
@@ -169,7 +178,8 @@ namespace FamilyShooter
             // _spriteBatch.Draw(Art.Pointer, Input.MousePosition, Color.White);
             // but Software cursor lags behind hardware cursor, so we prefer setting custom cursor
 
-            Grid.Draw(_spriteBatch);
+            // Removed Grid on this project, replaced with background sky
+            // Grid.Draw(_spriteBatch);
 
             _spriteBatch.End();
 

@@ -97,7 +97,7 @@ namespace FamilyShooter
                 GameRoot.ParticleManager.CreateParticle(Art.LineParticle, position, particleColor, 190f, new Vector2(1.5f), state);
             }
 
-            GameRoot.Grid.ApplyImplosiveForce(60f * (MathF.Sin(sprayAngle / 2) * 10f + 20f), new Vector3(Position, 0f), 200f);
+            // GameRoot.Grid.ApplyImplosiveForce(60f * (MathF.Sin(sprayAngle / 2) * 10f + 20f), new Vector3(Position, 0f), 200f);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
