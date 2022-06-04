@@ -44,21 +44,31 @@ namespace FamilyShooter
             m_LastAimAngle = 0f;
         }
 
-        public void TryAttachCompanion(CompanionShip companionShip)
+        public CompanionShip TryAttachCompanion()
         {
             if (attachedCompanionShips.Count < MAX_COMPANIONS_COUNT)
             {
+                var companionShip = new CompanionShip();
                 AttachCompanion(companionShip);
+                return companionShip;
             }
+
+            // No slot left, don't spawn new companion at all, but give extra score instead
+            PlayerStatus.AddScoreForPickingExtraCompanionWhenAllSlotsAreFull();
+
+            return null;
         }
 
-        public void AttachCompanion(CompanionShip companionShip)
+        private void AttachCompanion(CompanionShip companionShip)
         {
             companionShip.OnAttachToPlayerShipWith(attachedCompanionShips.Count);
             attachedCompanionShips.Add(companionShip);
 
             // place them appropriately even if player is not shooting
             companionShip.SetBaseAngleAroundPlayerShip(m_LastAimAngle);
+
+            // set position and rotation to match assigned slot immediately
+            companionShip.SetTransformAttachedToPlayerShip();
         }
 
         public void DetachCompanion(CompanionShip companionShip)
@@ -93,6 +103,7 @@ namespace FamilyShooter
             foreach (var attachedCompanionShip in attachedCompanionShips)
             {
                 attachedCompanionShip.OnDetachFromPlayerShip();
+                attachedCompanionShip.Kill();
             }
 
             attachedCompanionShips.Clear();

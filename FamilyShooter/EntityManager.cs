@@ -10,6 +10,8 @@ namespace FamilyShooter
         // if you add a lst here, make sure to update it on Update when entities are Expired
         private static List<Entity> entities = new List<Entity>();
 
+        private static List<CompanionEgg> companionEggs = new List<CompanionEgg>();
+
         private static List<CompanionShip> companionShips = new List<CompanionShip>();
         public static List<CompanionShip> CompanionShips => companionShips;
 
@@ -66,6 +68,7 @@ namespace FamilyShooter
             entities = entities.Where(x => !x.IsExpired).ToList();
             bullets = bullets.Where(x => !x.IsExpired).ToList();
             enemies = enemies.Where(x => !x.IsExpired).ToList();
+            companionEggs = companionEggs.Where(x => !x.IsExpired).ToList();
             companionShips = companionShips.Where(x => !x.IsExpired).ToList();
             blackHoles = blackHoles.Where(x => !x.IsExpired).ToList();
         }
@@ -79,6 +82,9 @@ namespace FamilyShooter
                 case Bullet bullet:
                     bullets.Add(bullet);
                     break;
+                case CompanionEgg companionEgg:
+                    companionEggs.Add(companionEgg);
+                    break;
                 case CompanionShip companionShip:
                     companionShips.Add(companionShip);
                     break;
@@ -91,10 +97,19 @@ namespace FamilyShooter
             }
         }
 
-        public static void SpawnCompanionShip(Vector2 position)
+        public static void SpawnCompanionEgg(Vector2 position)
         {
-            var companionShip = new CompanionShip { Position = position };
-            Add(companionShip);
+            var companionEgg = new CompanionEgg { Position = position };
+            Add(companionEgg);
+        }
+
+        private static void TrySpawnCompanionShipAndAttachToPlayerShip()
+        {
+            CompanionShip companionShip = PlayerShip.Instance.TryAttachCompanion();
+            if (companionShip != null)
+            {
+                Add(companionShip);
+            }
         }
 
         private static bool IsColliding(Entity a, Entity b, float extraRadius = 0f)
@@ -128,6 +143,16 @@ namespace FamilyShooter
                 {
                     PlayerShip.Instance.Kill();
                     bullet.IsExpired = true;
+                }
+
+                // ... companion egg (only for friendly-fire bullets)
+                foreach (CompanionEgg companionEgg in companionEggs)
+                {
+                    if (bullet.CanHitPlayerShip && IsColliding(companionEgg, bullet))
+                    {
+                        companionEgg.Kill();
+                        bullet.IsExpired = true;
+                    }
                 }
 
                 // ... companion ship (only for friendly-fire bullets)
@@ -200,15 +225,19 @@ namespace FamilyShooter
                 }
             }
 
-            // handle collision between player ship and unattached companion ship
-            foreach (CompanionShip companionShip in companionShips)
+            // handle collision between player ship and companion egg (pick up)
+            foreach (CompanionEgg companionEgg in companionEggs)
             {
                 // extra radius helps catching companion, since Player Ship hurtbox is made small to avoid damages
-                if (!companionShip.IsAttachedToPlayerShip &&
-                    IsColliding(companionShip, PlayerShip.Instance, extraRadius: 40f))
+                if (IsColliding(companionEgg, PlayerShip.Instance, extraRadius: 40f))
                 {
-                    // Player Ship collects companion ship, attach it
-                    PlayerShip.Instance.TryAttachCompanion(companionShip);
+                    // Player Ship collects companion egg
+
+                    // Destroy egg silently ("hatch")
+                    companionEgg.Clear();
+
+                    // Spawn companion and attach to player ship
+                    TrySpawnCompanionShipAndAttachToPlayerShip();
                 }
             }
         }

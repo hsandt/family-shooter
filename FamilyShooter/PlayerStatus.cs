@@ -13,6 +13,7 @@ namespace FamilyShooter
         private const int extraLifeRequiredAdditionalScore = 2000;
         // private const int extraCompanionRequiredAdditionalScore = 500;
         private const int extraCompanionRequiredAdditionalScore = 10;  // TEST many companions
+        private const int scoreReceivedInsteadOfNewCompanionWhenAllCompanionSlotsFull = 5;
 
         public static int Lives { get; private set; }
         public static int Score { get; private set; }
@@ -66,6 +67,19 @@ namespace FamilyShooter
             }
         }
 
+        private static void AddScore(int addedScore)
+        {
+            Score += addedScore;
+
+            // loop just in case we gained enough score to gain 2+ lives at once!
+            while (Score >= scoreForExtraLife)
+            {
+                // we've reached a new threshold, add extra life and extend threshold for next time
+                scoreForExtraLife += extraLifeRequiredAdditionalScore;
+                Lives++;
+            }
+        }
+
         public static void AddScoreForDestruction(Enemy enemy)
         {
             // Tutorial suggests to prevent scoring when dead (can only happen with stray bullet hitting
@@ -80,25 +94,36 @@ namespace FamilyShooter
                 return;
             }
 
-            Score += enemy.RewardScore * CurrentMultiplier;
+            AddScore(enemy.RewardScore * CurrentMultiplier);
 
-            // loop just in case we gained enough score to gain 2+ lives at once!
-            while (Score >= scoreForExtraLife)
-            {
-                // we've reached a new threshold, add extra life and extend threshold for next time
-                scoreForExtraLife += extraLifeRequiredAdditionalScore;
-                Lives++;
-            }
-
-            // same for companion
+            // loop just in case we gained enough score to gain 2+ companion eggs at once,
+            // but to avoid overlap, only spawn one companion egg even if you should have more
+            bool hasSpawnedCompanionEgg = false;
             while (Score >= scoreForExtraCompanion)
             {
                 scoreForExtraCompanion += extraCompanionRequiredAdditionalScore;
-                EntityManager.SpawnCompanionShip(enemy.Position);
+                if (!hasSpawnedCompanionEgg)
+                {
+                    EntityManager.SpawnCompanionEgg(enemy.Position);
+                    hasSpawnedCompanionEgg = true;
+                }
             }
 
             // Unlike tutorial, I call it directly here
             IncreaseMultiplier();
+        }
+
+        public static void AddScoreForPickingExtraCompanionWhenAllSlotsAreFull()
+        {
+            if (IsGameOver)
+            {
+                return;
+            }
+
+            AddScore(scoreReceivedInsteadOfNewCompanionWhenAllCompanionSlotsFull * CurrentMultiplier);
+
+            // Note that we don't check scoreForExtraCompanion since spawning a companion egg after picking it
+            // would be weird! We'll just keep the extra score and spawn it later on next enemy destruction.
         }
 
         private static void IncreaseMultiplier()

@@ -7,6 +7,7 @@ namespace FamilyShooter
     public static class Art
     {
         public static Texture2D Player { get; private set; }
+        public static Texture2D CompanionEgg { get; private set; }
         public static Texture2D CompanionShip { get; private set; }
         public static Texture2D Seeker { get; private set; }
         public static Texture2D Wanderer { get; private set; }
@@ -20,7 +21,8 @@ namespace FamilyShooter
 
         public static void Load(ContentManager content)
         {
-            Player = content.Load<Texture2D>("Art/Player");
+            Player = content.Load<Texture2D>("Art/PlayerShip");
+            CompanionEgg = content.Load<Texture2D>("Art/CompanionEgg");
             CompanionShip = content.Load<Texture2D>("Art/CompanionShip");
             Seeker = content.Load<Texture2D>("Art/Seeker");
             Wanderer = content.Load<Texture2D>("Art/Wanderer");

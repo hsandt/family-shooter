@@ -37,6 +37,18 @@
 /processorParam:TextureFormat=Color
 /build:Art/Bullet.png
 
+#begin Art/CompanionEgg.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Art/CompanionEgg.png
+
 #begin Art/CompanionShip.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -73,7 +85,7 @@
 /processorParam:TextureFormat=Color
 /build:Art/Laser.png
 
-#begin Art/Player.png
+#begin Art/PlayerShip.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -83,7 +95,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Art/Player.png
+/build:Art/PlayerShip.png
 
 #begin Art/Pointer.png
 /importer:TextureImporter

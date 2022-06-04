@@ -1,6 +1,5 @@
 using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace FamilyShooter
 {
@@ -17,6 +16,8 @@ namespace FamilyShooter
 
         /* State */
 
+        // Note that now that we have eggs, companions are always attached to player ship until death,
+        // but we kept this in case we add a feature to allow sending them away temporarily later
         public bool IsAttachedToPlayerShip => m_AttachmentIndex >= 0;
 
         private int m_AttachmentIndex;
@@ -27,7 +28,6 @@ namespace FamilyShooter
         public CompanionShip()
         {
             image = Art.CompanionShip;
-            color = new Color(20, 255, 0);
             Position = GameRoot.ScreenSize / 2f;
             CollisionRadius = 5;
 
@@ -39,20 +39,35 @@ namespace FamilyShooter
         {
             if (IsAttachedToPlayerShip && !PlayerShip.Instance.IsDead)
             {
-                // on the right of player ship
-                Vector2 offset = OFFSET_FROM_PLAYER_SHIP * Vector2.UnitX;
-                Vector2 rotatedOffset = offset.Rotated(angleAroundPlayerShip);
-                Vector2 targetPosition = PlayerShip.Instance.Position + rotatedOffset;
-
-                // Movement: no need to even set Velocity, just move position at max speed toward target
-                float maxMotion = MAX_SPEED_TO_TARGET * (float)GameRoot.GameTime.ElapsedGameTime.TotalSeconds;
-                Position = Position.Towards(targetPosition, maxMotion);
-                Orientation = angleAroundPlayerShip;
+                UpdateTransformTowardPlayerShipSlot();
             }
-            else
-            {
+        }
 
-            }
+        public void UpdateTransformTowardPlayerShipSlot()
+        {
+            Vector2 targetPosition = ComputeSlotPosition();
+
+            // Movement: no need to even set Velocity, just move position at max speed toward target
+            float maxMotion = MAX_SPEED_TO_TARGET * (float)GameRoot.GameTime.ElapsedGameTime.TotalSeconds;
+            Position = Position.Towards(targetPosition, maxMotion);
+            Orientation = angleAroundPlayerShip;
+        }
+
+        public void SetTransformAttachedToPlayerShip()
+        {
+            Vector2 targetPosition = ComputeSlotPosition();
+
+            Position = targetPosition;
+            Orientation = angleAroundPlayerShip;
+        }
+
+        private Vector2 ComputeSlotPosition()
+        {
+            // on the right of player ship at angle 0
+            Vector2 offset = OFFSET_FROM_PLAYER_SHIP * Vector2.UnitX;
+            Vector2 rotatedOffset = offset.Rotated(angleAroundPlayerShip);
+            Vector2 targetPosition = PlayerShip.Instance.Position + rotatedOffset;
+            return targetPosition;
         }
 
         public void OnAttachToPlayerShipWith(int attachmentIndex)
