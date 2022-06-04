@@ -141,10 +141,14 @@ namespace FamilyShooter
 
             GraphicsDevice.Clear(Color.Black);
 
+            // Now player sprites are physical objects while enemy sprites are pure colors,
+            // so Additive is not fully justified but overall it works better when enemy sprites are overlapping others
             _spriteBatch.Begin(SpriteSortMode.Texture, BlendState.Additive);
             EntityManager.Draw(_spriteBatch);
             _spriteBatch.End();
 
+            // This must absolutely be Additive for particles which use black as background
+            // It is not required for text which is white anyway
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
 
             ParticleManager.Draw(_spriteBatch);
