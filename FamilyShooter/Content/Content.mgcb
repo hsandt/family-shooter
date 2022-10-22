@@ -236,11 +236,11 @@
 /processorParam:Quality=Best
 /build:Sound/explosion-08.wav
 
-#begin Sound/Music.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
+#begin Sound/Music.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Sound/Music.mp3
+/build:Sound/Music.ogg
 
 #begin Sound/shoot-01.wav
 /importer:WavImporter

@@ -11,7 +11,7 @@ namespace FamilyShooter
     {
         private static readonly Random rand = new Random();
 
-        public static Song Music { get; private set; }
+        public static SoundEffect Music { get; private set; }
 
         public static SoundEffect[] explosions { get; private set; }
         public static SoundEffect GetRandomExplosion() => explosions[rand.Next(explosions.Length)];
@@ -24,7 +24,9 @@ namespace FamilyShooter
 
         public static void Load(ContentManager content)
         {
-            Music = content.Load<Song>("Sound/Music");
+            // Exceptionally load music as sound effect to enable perfect looping without delay
+            // This is a known limitation of MonoGame. See more info on Music usage.
+            Music = content.Load<SoundEffect>("Sound/Music");
 
             explosions = Enumerable.Range(1, 8).Select(x => content.Load<SoundEffect>($"Sound/explosion-{x:00}")).ToArray();
             shots = Enumerable.Range(1, 4).Select(x => content.Load<SoundEffect>($"Sound/shoot-{x:00}")).ToArray();

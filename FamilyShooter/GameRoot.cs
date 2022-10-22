@@ -1,6 +1,7 @@
 ﻿using System;
 using BloomPostprocess;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
@@ -72,8 +73,19 @@ namespace FamilyShooter
             // Hardware cursor is faster / more reactive than software cursor suggested in tutorial
             Mouse.SetCursor(MouseCursor.FromTexture2D(Art.Pointer, 0, 0));
 
-            MediaPlayer.IsRepeating = true;
-            MediaPlayer.Play(Sound.Music);
+            // The normal code for a BGM should be:
+            // MediaPlayer.IsRepeating = true;
+            // MediaPlayer.Play(Sound.Music);
+
+            // But a known limitation of MonoGame adds a perceptible pause between loops, so we prefer loading Music
+            // as a SoundEffect, then create a looping instance of it, as the cost of extra space usage in build
+            // (and most likely RAM since we are not streaming).
+            // https://community.monogame.net/t/background-music-delayed-when-looping/8892/8
+            // https://gamedev.stackexchange.com/questions/20313/eliminate-delay-between-looping-xna-songs
+            // https://www.reddit.com/r/gamedev/comments/1dd3bu/looping_background_music_in_cxna/
+            SoundEffectInstance musicInstance = Sound.Music.CreateInstance();
+            musicInstance.IsLooped = true;
+            musicInstance.Play();
 
             ParticleManager = new ParticleManager<ParticleState>(1024 * 20, ParticleState.UpdateParticle);
 
