@@ -10,8 +10,6 @@ namespace FamilyShooter
         /* Const */
         private const int BOUNCES_PER_BULLET = 1;
         private const int EXPLOSION_ON_WALL_PFX_COUNT = 30;
-        private readonly Color defaultColor = new Color(38, 255, 0);  // green
-        private readonly Color friendlyFireColor = new Color(255, 55, 37);  // red
 
         /* State */
         private int m_BouncesLeft;
@@ -24,8 +22,7 @@ namespace FamilyShooter
             Velocity = velocity;
             Orientation = Velocity.ToAngle();
 
-            image = Art.Bullet;
-            color = defaultColor;
+            image = Art.BulletYellow;
             CollisionRadius = 8f;
 
             m_BouncesLeft = BOUNCES_PER_BULLET;
@@ -99,9 +96,9 @@ namespace FamilyShooter
             // reorient them so their tail is still at the back
             Orientation = Velocity.ToAngle();
 
-            // after bouncing once, bullets become friendly-fire with different color
+            // after bouncing once, bullets become friendly-fire with different shape and color
             m_CanHitPlayerShip = true;
-            color = friendlyFireColor;
+            image = Art.BulletEnemyRed;
 
             --m_BouncesLeft;
         }

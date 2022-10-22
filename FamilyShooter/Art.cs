@@ -11,7 +11,9 @@ namespace FamilyShooter
         public static Texture2D CompanionShip { get; private set; }
         public static Texture2D Seeker { get; private set; }
         public static Texture2D Wanderer { get; private set; }
-        public static Texture2D Bullet { get; private set; }
+        public static Texture2D BulletYellow { get; private set; }
+        public static Texture2D BulletRed { get; private set; }
+        public static Texture2D BulletEnemyRed { get; private set; }
         public static Texture2D BlackHole { get; private set; }
         public static Texture2D LineParticle { get; private set; }
         public static Texture2D Glow { get; private set; }
@@ -28,7 +30,11 @@ namespace FamilyShooter
             CompanionShip = content.Load<Texture2D>("Art/CompanionShip");
             Seeker = content.Load<Texture2D>("Art/Seeker");
             Wanderer = content.Load<Texture2D>("Art/Wanderer");
-            Bullet = content.Load<Texture2D>("Art/Bullet");
+
+            BulletYellow = content.Load<Texture2D>("Art/Bullet_Yellow");
+            BulletRed = content.Load<Texture2D>("Art/Bullet_Red");
+            BulletEnemyRed = content.Load<Texture2D>("Art/Bullet_Enemy_Red");
+
             BlackHole = content.Load<Texture2D>("Art/Black Hole");
             LineParticle = content.Load<Texture2D>("Art/Laser");
             Glow = content.Load<Texture2D>("Art/Glow");
