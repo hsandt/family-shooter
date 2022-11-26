@@ -212,6 +212,20 @@
 /processorParam:TextureFormat=Compressed
 /build:Font/Nova Square.spritefont
 
+#begin Font/Srisakdi/Srisakdi-Bold.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Font/Srisakdi/Srisakdi-Bold.spritefont
+
+#begin Font/Srisakdi/Srisakdi-Regular.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Font/Srisakdi/Srisakdi-Regular.spritefont
+
 #begin Sound/explosion-01.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

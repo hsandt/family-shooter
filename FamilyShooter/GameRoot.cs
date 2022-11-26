@@ -174,10 +174,10 @@ namespace FamilyShooter
 
             ParticleManager.Draw(_spriteBatch);
 
-            _spriteBatch.DrawString(Art.Font, $"Lives: {PlayerStatus.Lives}", new Vector2(5), Color.White);
-            DrawRightAlignedString($"Score: {PlayerStatus.Score}", 5);
-            DrawRightAlignedString($"Multiplier: {PlayerStatus.CurrentMultiplier}", 35);
-            DrawRightAlignedString($"High Score: {PlayerStatus.HighScore}", 65);
+            _spriteBatch.DrawString(Art.Font, $"Lives: {PlayerStatus.Lives}", new Vector2(10, 8), Color.White);
+            DrawRightAlignedString($"Score: {PlayerStatus.Score}", ScreenSize.X - 10, 8);
+            DrawRightAlignedString($"Multiplier: {PlayerStatus.CurrentMultiplier}", ScreenSize.X - 10, 38);
+            DrawRightAlignedString($"High Score: {PlayerStatus.HighScore}", ScreenSize.X - 10, 68);
 
             if (PlayerStatus.IsGameOver)
             {
@@ -220,10 +220,10 @@ namespace FamilyShooter
             base.Draw(gameTime);
         }
 
-        private void DrawRightAlignedString(string text, float y)
+        private void DrawRightAlignedString(string text, float x, float y)
         {
             var textWidth = Art.Font.MeasureString(text).X;
-            _spriteBatch.DrawString(Art.Font, text, new Vector2(ScreenSize.X - textWidth - 5, y), Color.White);
+            _spriteBatch.DrawString(Art.Font, text, new Vector2(x - textWidth, y), Color.White);
         }
 
         private void DrawHorizontalCenterAlignedString(string text, float y)

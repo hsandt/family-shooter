@@ -53,7 +53,7 @@ namespace FamilyShooter
             Pixel.SetData(new[] {Color.White});
 
             Pointer = content.Load<Texture2D>("Art/Pointer");
-            Font = content.Load<SpriteFont>("Font/Nova Square");
+            Font = content.Load<SpriteFont>("Font/Srisakdi/Srisakdi-Bold");
         }
     }
 }
