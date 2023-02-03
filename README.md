@@ -7,8 +7,8 @@ by Michael Hoffman.
 
 ## License
 
-For code, see [CODE LICENSE](CODE LICENSE).
-For assets, see [ASSETS LICENSE](ASSETS LICENSE).
+For code, see [CODE LICENSE](CODE%20LICENSE).
+For assets, see [ASSETS LICENSE](ASSETS%20LICENSE).
 
 Note that since the project was based on a tutorial, it contains code identical or similar to code presented in that tutorial
 (whether in code snippets or as part of the provided full project sample).
